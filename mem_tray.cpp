@@ -1,8 +1,30 @@
 #include <gtk/gtk.h>
 #include <limits>
+#include <iostream>
 #include <fstream>
 #include <string>
 #include <vector>
+
+void print_usage(const char* program_name)
+{
+   std::cout <<
+      "Usage: " << program_name << " [options]\n"
+      "Options:\n"
+      "  --bg-color=<color> background color\n"
+      "                     Example: --bg-color=\"#000000\"\n"
+      "                              --bg-color=None\n"
+      "  --fg-color=<color> foreground color\n"
+      "                     Example: --fg-color=\"#FF0000\"\n"
+      "  --height=<value>   height of tray icon\n"
+      "  --width=<value>    width of tray icon\n"
+      "  --help,-h          print this help message"
+             << std::endl;
+}
+
+bool starts_with(const std::string& str, const std::string& prefix)
+{
+   return !str.compare(0, prefix.size(), prefix);
+}
 
 double get_free_mem_frac()
 {
@@ -118,10 +140,42 @@ void Tray_icon::main()
    gtk_main();
 }
 
-int main(int argc, char **argv) {
-   gtk_init(&argc, &argv);
+int main(int argc, char **argv)
+{
+   // default values
+   unsigned width = 30, height = 30, update_interval_in_seconds = 2;
+   std::string fg_color = "#00FF00", bg_color = "#000000";
 
-   Tray_icon tray_icon(30, 30, 2, "#000000", "#00FF00");
+   for (int i = 1; i < argc; ++i) {
+      const std::string option(argv[i]);
+
+      if (starts_with(option, "--bg-color=")) {
+         bg_color = option.substr(11);
+         continue;
+      }
+      if (starts_with(option, "--fg-color=")) {
+         fg_color = option.substr(11);
+         continue;
+      }
+      if (starts_with(option, "--height=")) {
+         height = std::stoi(option.substr(9));
+         continue;
+      }
+      if (starts_with(option, "--width=")) {
+         width = std::stoi(option.substr(8));
+         continue;
+      }
+      if (option == "--help" || option == "-h") {
+         print_usage(argv[0]);
+         exit(EXIT_SUCCESS);
+      }
+
+      std::cerr << "Error: unrecognized command line option: " << option << '\n';
+      exit(EXIT_FAILURE);
+   }
+
+   gtk_init(0, NULL);
+   Tray_icon tray_icon(width, height, update_interval_in_seconds, bg_color, fg_color);
    tray_icon.main();
 
    return 0;
