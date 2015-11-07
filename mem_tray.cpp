@@ -22,7 +22,7 @@ double get_free_mem_frac()
       file.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
    }
 
-   const double free_mem_frac =  1. - 1. * mem_free / mem_total;
+   const double free_mem_frac =  1. * mem_free / mem_total;
 
    if (free_mem_frac < 0.)
       return 0.;
@@ -36,7 +36,7 @@ double get_free_mem_frac()
 GdkPixbuf* create_pixbuf(unsigned width, unsigned height)
 {
    const double free_mem_frac = get_free_mem_frac();
-   const unsigned thresh = static_cast<unsigned>((1 - free_mem_frac) * height);
+   const unsigned thresh = static_cast<unsigned>(free_mem_frac * height);
 
    std::string empty(width, '.');
    std::string full(width, '*');
