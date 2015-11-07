@@ -125,6 +125,7 @@ int Tray_icon::check()
 {
    if (pixbuf)
       gdk_pixbuf_unref(pixbuf);
+
    pixbuf = create_pixbuf(get_free_mem_frac(), width, height, bg_color, fg_color);
    gtk_status_icon_set_from_pixbuf(tray_icon, pixbuf);
 
