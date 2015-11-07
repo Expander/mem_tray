@@ -67,7 +67,7 @@ GdkPixbuf* create_pixbuf(unsigned width, unsigned height)
 
 class Tray_icon {
 public:
-   Tray_icon();
+   Tray_icon(unsigned width_ = 30, unsigned height_ = 30, unsigned update_interval_in_seconds_ = 2);
    ~Tray_icon();
    void main();
    int check();
@@ -79,12 +79,12 @@ private:
    unsigned update_interval_in_seconds;
 };
 
-Tray_icon::Tray_icon()
+Tray_icon::Tray_icon(unsigned width_, unsigned height_, unsigned update_interval_in_seconds_)
    : tray_icon(gtk_status_icon_new())
    , pixbuf(NULL)
-   , width(30)
-   , height(30)
-   , update_interval_in_seconds(2)
+   , width(width_)
+   , height(height_)
+   , update_interval_in_seconds(update_interval_in_seconds_)
 {
 }
 
