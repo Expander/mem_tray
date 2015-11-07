@@ -33,7 +33,9 @@ double get_free_mem_frac()
    return free_mem_frac;
 }
 
-GdkPixbuf* create_pixbuf(unsigned width, unsigned height)
+GdkPixbuf* create_pixbuf(
+   unsigned width, unsigned height,
+   const std::string& bg_color, const std::string& fg_color)
 {
    const double free_mem_frac = get_free_mem_frac();
    const unsigned thresh = static_cast<unsigned>(free_mem_frac * height);
@@ -42,8 +44,8 @@ GdkPixbuf* create_pixbuf(unsigned width, unsigned height)
    std::string full(width, '*');
    std::vector<std::string> offset;
    offset.push_back(std::to_string(width) + ' ' + std::to_string(height) + " 2 1");
-   offset.push_back(". c #000000");
-   offset.push_back("* c #00FF00");
+   offset.push_back(". c " + bg_color);
+   offset.push_back("* c " + fg_color);
 
    const char** xpm = static_cast<const char**>(
       malloc(sizeof(const char*) * (height + offset.size())));
@@ -66,7 +68,8 @@ GdkPixbuf* create_pixbuf(unsigned width, unsigned height)
 
 class Tray_icon {
 public:
-   Tray_icon(unsigned width_ = 30, unsigned height_ = 30, unsigned update_interval_in_seconds_ = 2);
+   Tray_icon(unsigned width_, unsigned height_, unsigned update_interval_in_seconds_,
+             const std::string& bg_color_, const std::string& fg_color_);
    ~Tray_icon();
    void main();
    int check();
@@ -74,13 +77,17 @@ public:
 private:
    GtkStatusIcon* tray_icon;
    GdkPixbuf* pixbuf;
+   std::string bg_color, fg_color;
    unsigned width, height;
    unsigned update_interval_in_seconds;
 };
 
-Tray_icon::Tray_icon(unsigned width_, unsigned height_, unsigned update_interval_in_seconds_)
+Tray_icon::Tray_icon(unsigned width_, unsigned height_, unsigned update_interval_in_seconds_,
+                     const std::string& bg_color_, const std::string& fg_color_)
    : tray_icon(gtk_status_icon_new())
    , pixbuf(NULL)
+   , bg_color(bg_color_)
+   , fg_color(fg_color_)
    , width(width_)
    , height(height_)
    , update_interval_in_seconds(update_interval_in_seconds_)
@@ -97,7 +104,7 @@ int Tray_icon::check()
 {
    if (pixbuf)
       gdk_pixbuf_unref(pixbuf);
-   pixbuf = create_pixbuf(width, height);
+   pixbuf = create_pixbuf(width, height, bg_color, fg_color);
    gtk_status_icon_set_from_pixbuf(tray_icon, pixbuf);
 
    return 1;
@@ -114,7 +121,7 @@ void Tray_icon::main()
 int main(int argc, char **argv) {
    gtk_init(&argc, &argv);
 
-   Tray_icon tray_icon;
+   Tray_icon tray_icon(30, 30, 2, "#000000", "#00FF00");
    tray_icon.main();
 
    return 0;
