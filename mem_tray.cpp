@@ -41,7 +41,7 @@ GdkPixbuf* create_pixbuf(unsigned width, unsigned height)
    std::string empty(width, '.');
    std::string full(width, '*');
    std::vector<std::string> offset;
-   offset.push_back(std::to_string(height) + ' ' + std::to_string(height) + " 3 1");
+   offset.push_back(std::to_string(width) + ' ' + std::to_string(height) + " 3 1");
    offset.push_back("  c None");
    offset.push_back(". c #000000");
    offset.push_back("* c #00FF00");
