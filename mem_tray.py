@@ -8,8 +8,7 @@ def get_free_mem_frac():
 def create_xpm(lines):
     thresh = int((1 - get_free_mem_frac()) * lines)
 
-    xpm = [str(lines) + " " + str(lines) + " 3 1",
-           "  c None",
+    xpm = [str(lines) + " " + str(lines) + " 2 1",
            ". c #000000",
            "* c #00FF00"]
 
