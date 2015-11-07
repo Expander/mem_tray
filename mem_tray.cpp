@@ -56,11 +56,10 @@ double get_free_mem_frac()
 }
 
 GdkPixbuf* create_pixbuf(
-   unsigned width, unsigned height,
+   double frac, unsigned width, unsigned height,
    const std::string& bg_color, const std::string& fg_color)
 {
-   const double free_mem_frac = get_free_mem_frac();
-   const unsigned thresh = static_cast<unsigned>(free_mem_frac * height);
+   const unsigned thresh = static_cast<unsigned>(frac * height);
 
    std::string empty(width, '.');
    std::string full(width, '*');
@@ -126,7 +125,7 @@ int Tray_icon::check()
 {
    if (pixbuf)
       gdk_pixbuf_unref(pixbuf);
-   pixbuf = create_pixbuf(width, height, bg_color, fg_color);
+   pixbuf = create_pixbuf(get_free_mem_frac(), width, height, bg_color, fg_color);
    gtk_status_icon_set_from_pixbuf(tray_icon, pixbuf);
 
    return 1;
