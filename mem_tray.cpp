@@ -15,7 +15,7 @@ double get_free_mem_frac()
       if (token == "MemTotal:") {
          file >> mem_total;
       }
-      if (token == "MemAvailable:") {
+      if (token == "MemFree:") {
          file >> mem_free;
       }
       // ignore rest of the line
