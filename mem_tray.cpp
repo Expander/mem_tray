@@ -21,11 +21,13 @@ void print_usage(const char* program_name)
              << std::endl;
 }
 
+/// test whether `str' starts with `prefix'
 bool starts_with(const std::string& str, const std::string& prefix)
 {
    return !str.compare(0, prefix.size(), prefix);
 }
 
+/// returns fraction of free memory
 double get_free_mem_frac()
 {
    unsigned long mem_total = 0;
@@ -55,6 +57,7 @@ double get_free_mem_frac()
    return free_mem_frac;
 }
 
+/// returns pixbuf which displays a given fraction
 GdkPixbuf* create_pixbuf(
    double frac, unsigned width, unsigned height,
    const std::string& bg_color, const std::string& fg_color)
@@ -92,8 +95,7 @@ public:
    Tray_icon(unsigned width_, unsigned height_, unsigned update_interval_in_seconds_,
              const std::string& bg_color_, const std::string& fg_color_);
    ~Tray_icon();
-   void main();
-   int check();
+   void main(); ///< display tray icon
 
 private:
    GtkStatusIcon* tray_icon;
@@ -101,6 +103,8 @@ private:
    std::string bg_color, fg_color;
    unsigned width, height;
    unsigned update_interval_in_seconds;
+
+   int update(); ///< update tray icon
 };
 
 Tray_icon::Tray_icon(unsigned width_, unsigned height_, unsigned update_interval_in_seconds_,
@@ -121,7 +125,7 @@ Tray_icon::~Tray_icon()
       gdk_pixbuf_unref(pixbuf);
 }
 
-int Tray_icon::check()
+int Tray_icon::update()
 {
    if (pixbuf)
       gdk_pixbuf_unref(pixbuf);
@@ -134,9 +138,9 @@ int Tray_icon::check()
 
 void Tray_icon::main()
 {
-   check();
+   update();
    gtk_status_icon_set_visible(tray_icon, TRUE);
-   g_timeout_add_seconds(update_interval_in_seconds, GSourceFunc(&Tray_icon::check), this);
+   g_timeout_add_seconds(update_interval_in_seconds, GSourceFunc(&Tray_icon::update), this);
    gtk_main();
 }
 
