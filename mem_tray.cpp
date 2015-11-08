@@ -93,7 +93,7 @@ GdkPixbuf* create_pixbuf(
 
 class Tray_icon {
 public:
-   Tray_icon(unsigned width_, unsigned height_, unsigned update_interval_in_seconds_,
+   Tray_icon(unsigned width_, unsigned height_, double update_interval_in_seconds_,
              const std::string& bg_color_, const std::string& fg_color_);
    ~Tray_icon();
    void main(); ///< display tray icon
@@ -103,12 +103,12 @@ private:
    GdkPixbuf* pixbuf;
    std::string bg_color, fg_color;
    unsigned width, height;
-   unsigned update_interval_in_seconds;
+   double update_interval_in_seconds;
 
    int update(); ///< update tray icon
 };
 
-Tray_icon::Tray_icon(unsigned width_, unsigned height_, unsigned update_interval_in_seconds_,
+Tray_icon::Tray_icon(unsigned width_, unsigned height_, double update_interval_in_seconds_,
                      const std::string& bg_color_, const std::string& fg_color_)
    : tray_icon(gtk_status_icon_new())
    , pixbuf(NULL)
@@ -141,7 +141,7 @@ void Tray_icon::main()
 {
    update();
    gtk_status_icon_set_visible(tray_icon, TRUE);
-   g_timeout_add_seconds(update_interval_in_seconds, GSourceFunc(&Tray_icon::update), this);
+   g_timeout_add(1000 * update_interval_in_seconds, GSourceFunc(&Tray_icon::update), this);
    gtk_main();
 }
 
@@ -150,7 +150,8 @@ int main(int argc, char **argv)
    gtk_init(&argc, &argv);
 
    // default values
-   unsigned width = 30, height = 30, update_interval_in_seconds = 2;
+   unsigned width = 30, height = 30;
+   double update_interval_in_seconds = 2.;
    std::string fg_color = "#00FF00", bg_color = "#000000";
 
    for (int i = 1; i < argc; ++i) {
@@ -173,7 +174,7 @@ int main(int argc, char **argv)
          continue;
       }
       if (starts_with(option, "--update-interval=")) {
-         update_interval_in_seconds = std::stoi(option.substr(18));
+         update_interval_in_seconds = std::stod(option.substr(18));
          continue;
       }
       if (option == "--help" || option == "-h") {
