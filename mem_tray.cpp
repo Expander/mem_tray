@@ -10,14 +10,15 @@ void print_usage(const char* program_name)
    std::cout <<
       "Usage: " << program_name << " [options]\n"
       "Options:\n"
-      "  --bg-color=<color> background color\n"
-      "                     Example: --bg-color=\"#000000\"\n"
-      "                              --bg-color=None\n"
-      "  --fg-color=<color> foreground color\n"
-      "                     Example: --fg-color=\"#FF0000\"\n"
-      "  --height=<value>   height of tray icon\n"
-      "  --width=<value>    width of tray icon\n"
-      "  --help,-h          print this help message"
+      "  --bg-color=<color>           background color\n"
+      "                               Example: --bg-color=\"#000000\"\n"
+      "                                        --bg-color=None\n"
+      "  --fg-color=<color>           foreground color\n"
+      "                               Example: --fg-color=\"#FF0000\"\n"
+      "  --height=<value>             height of tray icon\n"
+      "  --help,-h                    print this help message"
+      "  --update-interval=<value>    update interval in seconds\n"
+      "  --width=<value>              width of tray icon\n"
              << std::endl;
 }
 
@@ -167,6 +168,10 @@ int main(int argc, char **argv)
       }
       if (starts_with(option, "--width=")) {
          width = std::stoi(option.substr(8));
+         continue;
+      }
+      if (starts_with(option, "--update-interval=")) {
+         update_interval_in_seconds = std::stoi(option.substr(18));
          continue;
       }
       if (option == "--help" || option == "-h") {
