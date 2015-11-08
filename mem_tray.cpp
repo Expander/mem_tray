@@ -147,6 +147,8 @@ void Tray_icon::main()
 
 int main(int argc, char **argv)
 {
+   gtk_init(&argc, &argv);
+
    // default values
    unsigned width = 30, height = 30, update_interval_in_seconds = 2;
    std::string fg_color = "#00FF00", bg_color = "#000000";
@@ -183,7 +185,6 @@ int main(int argc, char **argv)
       exit(EXIT_FAILURE);
    }
 
-   gtk_init(0, NULL);
    Tray_icon tray_icon(width, height, update_interval_in_seconds, bg_color, fg_color);
    tray_icon.main();
 
