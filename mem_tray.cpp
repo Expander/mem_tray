@@ -100,7 +100,6 @@ public:
 
 private:
    GtkStatusIcon* tray_icon;
-   GdkPixbuf* pixbuf;
    std::string bg_color, fg_color;
    unsigned width, height;
    double update_interval_in_seconds;
@@ -111,7 +110,6 @@ private:
 Tray_icon::Tray_icon(unsigned width_, unsigned height_, double update_interval_in_seconds_,
                      const std::string& bg_color_, const std::string& fg_color_)
    : tray_icon(gtk_status_icon_new())
-   , pixbuf(NULL)
    , bg_color(bg_color_)
    , fg_color(fg_color_)
    , width(width_)
@@ -122,14 +120,14 @@ Tray_icon::Tray_icon(unsigned width_, unsigned height_, double update_interval_i
 
 Tray_icon::~Tray_icon()
 {
-   if (pixbuf)
-      gdk_pixbuf_unref(pixbuf);
 }
 
 int Tray_icon::update()
 {
+   GdkPixbuf* pixbuf = gtk_status_icon_get_pixbuf(tray_icon);
+
    if (pixbuf)
-      gdk_pixbuf_unref(pixbuf);
+      g_object_unref(pixbuf);
 
    pixbuf = create_pixbuf(get_free_mem_frac(), width, height, bg_color, fg_color);
    gtk_status_icon_set_from_pixbuf(tray_icon, pixbuf);
