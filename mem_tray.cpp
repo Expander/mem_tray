@@ -67,10 +67,10 @@ GdkPixbuf* create_pixbuf(
 
    std::string empty(width, '.');
    std::string full(width, '*');
-   std::vector<std::string> offset;
-   offset.push_back(std::to_string(width) + ' ' + std::to_string(height) + " 2 1");
-   offset.push_back(". c " + bg_color);
-   offset.push_back("* c " + fg_color);
+   std::vector<std::string> offset(3);
+   offset[0] = std::to_string(width) + ' ' + std::to_string(height) + " 2 1";
+   offset[1] = ". c " + bg_color;
+   offset[2] = "* c " + fg_color;
 
    const char** xpm = static_cast<const char**>(
       malloc(sizeof(const char*) * (height + offset.size())));
